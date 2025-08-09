@@ -4,16 +4,16 @@ const searchButton = document.getElementById('search');
 const weatherOutput = document.getElementById('weather-output');
 const autocompleteList = document.getElementById('autocomplete-list');
 
-// REMOVED: Hardcoded locations array
-// const locations = ["New York", "California", "Japan", "Australia", "China","Kochi","Kozhikode"];
+let selectedCoords = null; 
 
 locationInput.addEventListener('input', async function() {
     let val = this.value;
+    selectedCoords = null; 
     closeAllLists();
     if (!val) return false;
 
     try {
-        // Fetch matching cities from OpenWeatherMap
+     
         const response = await fetch(
             `https://api.openweathermap.org/geo/1.0/direct?q=${val}&limit=5&appid=${apiKey}`
         );
@@ -28,9 +28,13 @@ locationInput.addEventListener('input', async function() {
             let displayName = `${location.name}, ${location.country}`;
             let item = document.createElement('div');
             item.innerHTML = `<strong>${displayName.substr(0, val.length)}</strong>${displayName.substr(val.length)}`;
-            item.innerHTML += `<input type='hidden' value='${displayName}'>`;
+            
+            item.innerHTML += `<input type='hidden' value='${displayName}' data-lat='${location.lat}' data-lon='${location.lon}'>`;
+
             item.addEventListener('click', function() {
-                locationInput.value = this.getElementsByTagName('input')[0].value;
+                const inputEl = this.getElementsByTagName('input')[0];
+                locationInput.value = inputEl.value;
+                selectedCoords = { lat: inputEl.dataset.lat, lon: inputEl.dataset.lon };
                 closeAllLists();
             });
             autocompleteItems.appendChild(item);
@@ -63,7 +67,16 @@ searchButton.addEventListener('click', function() {
 async function fetchWeather(location) {
     weatherOutput.innerHTML = '<p>Loading...</p>'; 
     try {
-        const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${apiKey}&units=metric`);
+        let url;
+        if (selectedCoords) {
+            
+            url = `https://api.openweathermap.org/data/2.5/weather?lat=${selectedCoords.lat}&lon=${selectedCoords.lon}&appid=${apiKey}&units=metric`;
+        } else {
+           
+            url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${apiKey}&units=metric`;
+        }
+
+        const response = await fetch(url);
         if (!response.ok) throw new Error('LOCATION NOT FOUND');
         const weatherData = await response.json();
         displayWeather(weatherData);
