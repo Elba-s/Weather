@@ -4,30 +4,40 @@ const searchButton = document.getElementById('search');
 const weatherOutput = document.getElementById('weather-output');
 const autocompleteList = document.getElementById('autocomplete-list');
 
-const locations = ["New York", "California", "Japan", "Australia", "China"];
+// REMOVED: Hardcoded locations array
+// const locations = ["New York", "California", "Japan", "Australia", "China","Kochi","Kozhikode"];
 
-locationInput.addEventListener('input', function() {
+locationInput.addEventListener('input', async function() {
     let val = this.value;
     closeAllLists();
     if (!val) return false;
 
-    let autocompleteItems = document.createElement('div');
-    autocompleteItems.setAttribute('id', this.id + 'autocomplete-list');
-    autocompleteItems.setAttribute('class', 'autocomplete-items');
-    this.parentNode.appendChild(autocompleteItems);
+    try {
+        // Fetch matching cities from OpenWeatherMap
+        const response = await fetch(
+            `https://api.openweathermap.org/geo/1.0/direct?q=${val}&limit=5&appid=${apiKey}`
+        );
+        const locationData = await response.json();
 
-    locations.forEach(location => {
-        if (location.substr(0, val.length).toUpperCase() === val.toUpperCase()) {
+        let autocompleteItems = document.createElement('div');
+        autocompleteItems.setAttribute('id', this.id + 'autocomplete-list');
+        autocompleteItems.setAttribute('class', 'autocomplete-items');
+        this.parentNode.appendChild(autocompleteItems);
+
+        locationData.forEach(location => {
+            let displayName = `${location.name}, ${location.country}`;
             let item = document.createElement('div');
-            item.innerHTML = `<strong>${location.substr(0, val.length)}</strong>${location.substr(val.length)}`;
-            item.innerHTML += `<input type='hidden' value='${location}'>`;
+            item.innerHTML = `<strong>${displayName.substr(0, val.length)}</strong>${displayName.substr(val.length)}`;
+            item.innerHTML += `<input type='hidden' value='${displayName}'>`;
             item.addEventListener('click', function() {
                 locationInput.value = this.getElementsByTagName('input')[0].value;
                 closeAllLists();
             });
             autocompleteItems.appendChild(item);
-        }
-    });
+        });
+    } catch (error) {
+        console.error(error);
+    }
 });
 
 function closeAllLists(elmnt) {
@@ -53,7 +63,7 @@ searchButton.addEventListener('click', function() {
 async function fetchWeather(location) {
     weatherOutput.innerHTML = '<p>Loading...</p>'; 
     try {
-        const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=7baedf95c394f45accb45ff5053d8092&units=metric`);
+        const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${apiKey}&units=metric`);
         if (!response.ok) throw new Error('LOCATION NOT FOUND');
         const weatherData = await response.json();
         displayWeather(weatherData);
