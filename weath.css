@@ -1,0 +1,63 @@
+body {
+    background-image: url(https://images.hdqwalls.com/wallpapers/clouds-summer-weather-5k-1b.jpg);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; 
+    margin: 0;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.container {
+    background-color: rgba(183, 219, 223, 0.8); 
+    padding: 50px; 
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); 
+    text-align: center;
+    color: rgb(236, 238, 241);
+}
+
+.searchhere {
+    margin-bottom: 20px;
+    
+}
+
+#location-input {
+    width: 80%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid seashell;
+}
+
+#search {
+    padding: 10px 20px;
+    border:solid;
+    border-radius: 7px;
+    background-color: lavenderblush;
+    color: black;
+    cursor: pointer;
+    transition:lavenderblush 0.3s;
+    
+}
+.autocomplete-items {
+    position: absolute; 
+    z-index: 999;
+    width: 20%; 
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: rgb(244, 248, 249);
+    color: rgb(15, 118, 109);
+}
+
+.autocomplete-items div {
+    padding: 10px;
+    cursor: pointer;
+}
+@media (max-width: 600px) {
+    .container {
+        padding: 20px; 
+    }
+
+    
+}

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Application</title>
+    <link rel="stylesheet" href="./weath.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Weather Application</h1>
+        <div class="searchhere" id="search-form">
+            <input type="text" id="location-input" placeholder="Enter location" required>
+        
+            <button type="submit" id="search">Search</button>
+            <div id="autocomplete-list" class="autocomplete-items"></div>
+        </div>
+        <div class="output-section">
+            <h2>Weather Information</h2>
+            <div id="weather-output"></div>
+        </div>
+    </div>
+    <script src="./scriptwea.js"></script>
+</body>
+</html>
